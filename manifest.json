@@ -1,9 +1,9 @@
 
 {
-  "name": "Capelania HABb",
+  "name": "Capelania HAB",
   "short_name": "Capelania",
   "description": "Sistema de registro de atividades de capelania",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#f8fafc",
   "theme_color": "#005a9c",

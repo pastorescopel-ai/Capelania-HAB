@@ -58,6 +58,17 @@ export interface VisitaColaborador {
   observacoes: string;
 }
 
+export interface SyncConfig {
+  apiKey: string;
+  authDomain: string;
+  databaseURL: string;
+  projectId: string;
+  storageBucket: string;
+  messagingSenderId: string;
+  appId: string;
+  enabled: boolean;
+}
+
 export interface AppData {
   estudosBiblicos: EstudoBiblico[];
   classesBiblicas: ClasseBiblica[];
@@ -67,4 +78,5 @@ export interface AppData {
   setores: string[];
   colaboradoresMestre: string[];
   logoCustom?: string;
+  syncConfig?: SyncConfig;
 }

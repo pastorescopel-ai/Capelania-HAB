@@ -1,36 +1,52 @@
 
-import { AppData, Usuario } from '../types';
+import { AppData, Usuario, SyncConfig } from '../types';
 import { SETORES_PADRAO } from '../constants';
 
-const STORAGE_KEY = 'capelania_app_data_v2';
+const APP_DATA_KEY = 'capelania_app_data';
+const SYNC_CONFIG_KEY = 'capelania_sync_config';
 
 export const storageService = {
+  saveSyncConfig: (config: SyncConfig | null) => {
+    if (!config) localStorage.removeItem(SYNC_CONFIG_KEY);
+    else localStorage.setItem(SYNC_CONFIG_KEY, JSON.stringify(config));
+  },
+
+  getSyncConfig: (): SyncConfig | null => {
+    const config = localStorage.getItem(SYNC_CONFIG_KEY);
+    return config ? JSON.parse(config) : null;
+  },
+
+  getInitialData: (): AppData => {
+    return {
+      estudosBiblicos: [],
+      classesBiblicas: [],
+      pequenosGrupos: [],
+      visitasColaboradores: [],
+      usuarios: [
+        {
+          id: 'admin-mestre',
+          nome: 'Administrador Geral',
+          email: 'pastorescopel@gmail.com',
+          senha: 'admin',
+          isAdmin: true
+        }
+      ],
+      setores: SETORES_PADRAO,
+      colaboradoresMestre: [],
+    };
+  },
+
   saveData: (data: AppData) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem(APP_DATA_KEY, JSON.stringify(data));
   },
 
   getData: (): AppData => {
-    const data = localStorage.getItem(STORAGE_KEY);
-    if (!data) {
-      // Usuário administrador mestre solicitado
-      const adminMestre: Usuario = {
-        id: crypto.randomUUID(),
-        nome: 'Administrador Geral',
-        email: 'pastorescopel@gmail.com',
-        senha: 'admin', // Senha inicial
-        isAdmin: true
-      };
-
-      return {
-        estudosBiblicos: [],
-        classesBiblicas: [],
-        pequenosGrupos: [],
-        visitasColaboradores: [],
-        usuarios: [adminMestre],
-        setores: SETORES_PADRAO,
-        colaboradoresMestre: [],
-      };
+    const saved = localStorage.getItem(APP_DATA_KEY);
+    if (!saved) return storageService.getInitialData();
+    try {
+      return JSON.parse(saved);
+    } catch (e) {
+      return storageService.getInitialData();
     }
-    return JSON.parse(data);
   }
 };

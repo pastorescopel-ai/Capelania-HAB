@@ -1,20 +1,34 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
 
-# Run and deploy your AI Studio app
+# 🏥 Gestão de Capelania HAB
 
-This contains everything you need to run your app locally.
+Sistema de gestão hospitalar para capelães, focado no registro de estudos bíblicos, pequenos grupos, classes bíblicas e atendimento a colaboradores.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1KZ4IJ2tg_1wrEIaXasuwtbWkQ6xLYCJL
+## 🚀 Funcionalidades
 
-## Run Locally
+- **PWA (Progressive Web App):** Pode ser instalado no celular como um aplicativo nativo.
+- **Modo Híbrido:** Funciona offline (salva no navegador) e sincroniza automaticamente com a nuvem quando há internet.
+- **Relatórios em PDF:** Gera relatórios detalhados com gráficos para a administração.
+- **Gestão de Acesso:** Login individual para cada capelão.
 
-**Prerequisites:**  Node.js
+## 🛠️ Como configurar o Banco de Dados (Firebase)
 
+Para que o sistema salve os dados online, você precisará de uma conta no Firebase:
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1. Vá para o [Console do Firebase](https://console.firebase.google.com/).
+2. Crie um novo projeto chamado "Capelania".
+3. Em **Build > Realtime Database**, clique em "Criar banco de dados".
+4. Nas **Regras**, altere `.read` e `.write` para `true` (para testes) ou configure a autenticação.
+5. Vá em **Configurações do Projeto > Seus Aplicativos** e adicione um aplicativo Web `</>`.
+6. Copie o objeto `firebaseConfig`.
+7. No sistema de Capelania, entre como Administrador (`pastorescopel@gmail.com`), vá em **Administração** e cole as credenciais.
+
+## 📦 Como publicar no GitHub Pages
+
+1. Crie um repositório no GitHub.
+2. Envie todos os arquivos deste projeto.
+3. No GitHub, vá em **Settings > Pages**.
+4. Em "Branch", escolha `main` e a pasta `/ (root)`.
+5. Clique em salvar. Em alguns minutos, seu app estará online no link fornecido!
+
+---
+*Desenvolvido para o Ministério de Capelania.*
