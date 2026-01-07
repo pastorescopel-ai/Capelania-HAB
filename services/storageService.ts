@@ -1,10 +1,11 @@
 
-import { AppData, Usuario, SyncConfig } from '../types';
+import { AppData, Usuario } from '../types';
 import { SETORES_PADRAO, NATIVE_LOGO_APP, NATIVE_LOGO_REPORT } from '../constants';
 
 const APP_DATA_KEY = 'capelania_app_data';
 
-const NATIVE_DB_URL: string = "https://script.google.com/macros/s/AKfycbyN_AiK6bpu-AOWsZq0NHD_yX-S6uEJTcIgH44WISwR0ZTpZkPIAsxE1Iu4T14gj0asfg/exec"; 
+// URL Padrão caso o usuário não tenha uma
+const DEFAULT_DB_URL: string = "https://script.google.com/macros/s/AKfycbyN_AiK6bpu-AOWsZq0NHD_yX-S6uEJTcIgH44WISwR0ZTpZkPIAsxE1Iu4T14gj0asfg/exec"; 
 
 export const storageService = {
   getInitialData: (): AppData => {
@@ -31,17 +32,21 @@ export const storageService = {
       reportHeaderText: 'Relatório de Atividades de Capelania',
       welcomeGreeting: 'Bem-vindo',
       welcomeTitle: 'Paz seja convosco!',
-      welcomeSubtitle: 'Resumo das atividades de capelania.',
+      welcomeSubtitle: 'Gestão de Atividades de Capelania',
       syncConfig: {
         provider: 'googlesheets',
-        googleSheetsUrl: NATIVE_DB_URL,
-        enabled: NATIVE_DB_URL !== ""
+        googleSheetsUrl: DEFAULT_DB_URL,
+        enabled: true
       }
     };
   },
 
   saveData: (data: AppData) => {
-    localStorage.setItem(APP_DATA_KEY, JSON.stringify(data));
+    try {
+      localStorage.setItem(APP_DATA_KEY, JSON.stringify(data));
+    } catch (e) {
+      console.error("Erro ao salvar dados localmente:", e);
+    }
   },
 
   getData: (): AppData => {
@@ -55,15 +60,11 @@ export const storageService = {
       return {
         ...initial,
         ...parsed,
-        // Garante que os logotipos nativos sejam usados se os customizados não existirem
+        // Garante que os logotipos nativos permaneçam se não houver customização válida
         logoCustom: parsed.logoCustom || NATIVE_LOGO_APP,
         reportLogoCustom: parsed.reportLogoCustom || NATIVE_LOGO_REPORT,
-        syncConfig: {
-          ...parsed.syncConfig,
-          googleSheetsUrl: parsed.syncConfig?.googleSheetsUrl || NATIVE_DB_URL,
-          enabled: (parsed.syncConfig?.googleSheetsUrl || NATIVE_DB_URL) !== ""
-        },
-        logs: Array.isArray(parsed.logs) ? parsed.logs : []
+        usuarios: Array.isArray(parsed.usuarios) && parsed.usuarios.length > 0 ? parsed.usuarios : initial.usuarios,
+        setores: Array.isArray(parsed.setores) && parsed.setores.length > 0 ? parsed.setores : initial.setores
       };
     } catch (e) {
       return initial;
