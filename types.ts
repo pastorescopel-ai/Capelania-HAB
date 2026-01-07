@@ -9,6 +9,13 @@ export interface Usuario {
   email: string;
   senha: string;
   isAdmin: boolean;
+  fotoPerfil?: string;
+}
+
+export interface LogEntry {
+  timestamp: string;
+  message: string;
+  type: 'error' | 'info' | 'success';
 }
 
 export interface EstudoBiblico {
@@ -58,14 +65,31 @@ export interface VisitaColaborador {
   observacoes: string;
 }
 
+export type TipoSolicitacao = 'edicao' | 'exclusao';
+export type CategoriaDados = 'estudosBiblicos' | 'classesBiblicas' | 'pequenosGrupos' | 'visitasColaboradores';
+
+export interface SolicitacaoAlteracao {
+  id: string;
+  tipo: TipoSolicitacao;
+  categoria: CategoriaDados;
+  idRegistro: string;
+  dadosAntigos: any;
+  dadosNovos?: any;
+  solicitante: string;
+  dataSolicitacao: string;
+  motivo: string;
+}
+
 export interface SyncConfig {
-  apiKey: string;
-  authDomain: string;
-  databaseURL: string;
-  projectId: string;
-  storageBucket: string;
-  messagingSenderId: string;
-  appId: string;
+  provider: 'firebase' | 'googlesheets';
+  apiKey?: string;
+  authDomain?: string;
+  databaseURL?: string;
+  projectId?: string;
+  storageBucket?: string;
+  messagingSenderId?: string;
+  appId?: string;
+  googleSheetsUrl?: string;
   enabled: boolean;
 }
 
@@ -74,9 +98,16 @@ export interface AppData {
   classesBiblicas: ClasseBiblica[];
   pequenosGrupos: PequenoGrupo[];
   visitasColaboradores: VisitaColaborador[];
+  solicitacoes: SolicitacaoAlteracao[];
   usuarios: Usuario[];
   setores: string[];
   colaboradoresMestre: string[];
+  logs: LogEntry[];
   logoCustom?: string;
+  reportLogoCustom?: string;
+  reportHeaderText?: string;
+  welcomeGreeting?: string;
+  welcomeTitle?: string;
+  welcomeSubtitle?: string;
   syncConfig?: SyncConfig;
 }

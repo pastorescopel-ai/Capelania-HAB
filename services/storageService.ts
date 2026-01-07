@@ -1,27 +1,19 @@
 
 import { AppData, Usuario, SyncConfig } from '../types';
-import { SETORES_PADRAO } from '../constants';
+import { SETORES_PADRAO, NATIVE_LOGO_APP, NATIVE_LOGO_REPORT } from '../constants';
 
 const APP_DATA_KEY = 'capelania_app_data';
-const SYNC_CONFIG_KEY = 'capelania_sync_config';
+
+const NATIVE_DB_URL: string = "https://script.google.com/macros/s/AKfycbyN_AiK6bpu-AOWsZq0NHD_yX-S6uEJTcIgH44WISwR0ZTpZkPIAsxE1Iu4T14gj0asfg/exec"; 
 
 export const storageService = {
-  saveSyncConfig: (config: SyncConfig | null) => {
-    if (!config) localStorage.removeItem(SYNC_CONFIG_KEY);
-    else localStorage.setItem(SYNC_CONFIG_KEY, JSON.stringify(config));
-  },
-
-  getSyncConfig: (): SyncConfig | null => {
-    const config = localStorage.getItem(SYNC_CONFIG_KEY);
-    return config ? JSON.parse(config) : null;
-  },
-
   getInitialData: (): AppData => {
     return {
       estudosBiblicos: [],
       classesBiblicas: [],
       pequenosGrupos: [],
       visitasColaboradores: [],
+      solicitacoes: [],
       usuarios: [
         {
           id: 'admin-mestre',
@@ -33,6 +25,18 @@ export const storageService = {
       ],
       setores: SETORES_PADRAO,
       colaboradoresMestre: [],
+      logs: [],
+      logoCustom: NATIVE_LOGO_APP,
+      reportLogoCustom: NATIVE_LOGO_REPORT,
+      reportHeaderText: 'Relatório de Atividades de Capelania',
+      welcomeGreeting: 'Bem-vindo',
+      welcomeTitle: 'Paz seja convosco!',
+      welcomeSubtitle: 'Resumo das atividades de capelania.',
+      syncConfig: {
+        provider: 'googlesheets',
+        googleSheetsUrl: NATIVE_DB_URL,
+        enabled: NATIVE_DB_URL !== ""
+      }
     };
   },
 
@@ -42,11 +46,27 @@ export const storageService = {
 
   getData: (): AppData => {
     const saved = localStorage.getItem(APP_DATA_KEY);
-    if (!saved) return storageService.getInitialData();
+    const initial = storageService.getInitialData();
+    
+    if (!saved) return initial;
+    
     try {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      return {
+        ...initial,
+        ...parsed,
+        // Garante que os logotipos nativos sejam usados se os customizados não existirem
+        logoCustom: parsed.logoCustom || NATIVE_LOGO_APP,
+        reportLogoCustom: parsed.reportLogoCustom || NATIVE_LOGO_REPORT,
+        syncConfig: {
+          ...parsed.syncConfig,
+          googleSheetsUrl: parsed.syncConfig?.googleSheetsUrl || NATIVE_DB_URL,
+          enabled: (parsed.syncConfig?.googleSheetsUrl || NATIVE_DB_URL) !== ""
+        },
+        logs: Array.isArray(parsed.logs) ? parsed.logs : []
+      };
     } catch (e) {
-      return storageService.getInitialData();
+      return initial;
     }
   }
 };
