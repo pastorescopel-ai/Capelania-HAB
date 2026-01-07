@@ -12,6 +12,6 @@
     "xlsx": "0.18.5"
   },
   "scripts": {
-    "build": "echo 'No build step required for ESM static site' && mkdir -p dist && cp -r * dist/ 2>/dev/null || true"
+    "build": "echo 'Static deploy'"
   }
 }
